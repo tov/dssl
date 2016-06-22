@@ -1,8 +1,8 @@
 test:
 	racket tests/test.rkt
 
-doc
-	raco scribble dssl.scrbl
+doc: dssl.scrbl
+	raco scribble --dest $@ $^
 
 reinstall:
 	raco pkg remove dssl
