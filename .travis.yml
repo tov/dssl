@@ -1,14 +1,23 @@
 language: racket
 
 env:
- - RACKET_VERSION=6.0
- - RACKET_VERSION=HEAD
+  global:
+    - RACKET_DIR=~/racket
+  matrix:
+    - RACKET_VERSION=6.0
+    - RACKET_VERSION=RELEASE
+    - RACKET_VERSION=HEAD
+
+matrix:
+  allow_failures:
+    - env: RACKET_VERSION=HEAD
+  fast_finish: true
 
 before_install:
-- git clone https://github.com/greghendershott/travis-racket.git
-- bash travis-racket/install-racket.sh
+  - git clone https://github.com/greghendershott/travis-racket.git
+  - bash travis-racket/install-racket.sh
+  - export PATH="${RACKET_DIR}/bin:${PATH}"
 
 script:
- - /usr/racket/bin/raco make test.rkt
- - /usr/racket/bin/raco test -x .
-
+  - /usr/racket/bin/raco make test.rkt
+  - /usr/racket/bin/raco test -x .
