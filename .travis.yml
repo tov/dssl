@@ -21,4 +21,4 @@ before_install:
 
 script:
   - raco pkg install
-  - raco tests/test.rkt
+  - racket tests/test.rkt
