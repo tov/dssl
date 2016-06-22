@@ -2,19 +2,24 @@
 
 (provide (except-out (all-from-out lang/htdp-advanced)
                      #%module-begin
-                     define
                      lambda
+                     λ
                      let
                      let*
+                     local
                      unless
                      when)
          (rename-out
-           [dssl:module-begin   #%module-begin]
+           ; Based on racket version:
            [dssl:define         define]
            [dssl:define-struct  define-struct]
+           ; Based on ASL version:
+           [dssl:module-begin   #%module-begin]
            [dssl:lambda         lambda]
+           [dssl:lambda         λ]
            [dssl:let            let]
            [dssl:let*           let*]
+           [dssl:local          local]
            [dssl:unless         unless]
            [dssl:when           when]))
 
@@ -22,8 +27,12 @@
 (require (for-syntax "classes.rkt"))
 
 (require (except-in lang/htdp-advanced
-                    define-struct
-                    require))
+                    define              ; uses racket version
+                    define-datatype     ; not available
+                    define-struct       ; uses racket version
+                    require             ; not available
+                    set!                ; not available
+                    ))
 (require test-engine/racket-tests)
 
 (define-syntax-rule (dssl:module-begin expr ...)
@@ -46,7 +55,7 @@
   (syntax-parse stx
     [(_ (param:id ...) expr:expr ...+)
      #'(lambda (param ...)
-         (begin (expr ...)))]))
+         (begin expr ...))]))
 
 (define-syntax (dssl:let stx)
   (syntax-parse stx
@@ -61,6 +70,11 @@
      #'(let* bs (begin expr ...))]
     [(_ name:id bs:distinct-bindings expr:expr ...+)
      #'(let* name bs (begin expr ...))]))
+
+(define-syntax (dssl:local stx)
+  (syntax-parse stx
+    [(_ (decl:expr ...) expr:expr ...+)
+     #'(local (decl ...) (begin expr ...))]))
 
 (define-syntax (dssl:unless stx)
   (syntax-parse stx

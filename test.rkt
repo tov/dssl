@@ -6,11 +6,14 @@
 
 (define (f x)
   'discard 'these 'symbols
-  (let ((y x))
+  (let ((y x)
+        (n 8))
     (+ y (pair-y p))))
 
 (f 3)
 
-; (check-equal? (f 4) 9)
-
 (check-expect (f 4) 9)
+
+(define g (λ (x) 'discard x))
+
+(check-expect (g 8) 8)
