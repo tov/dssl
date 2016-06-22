@@ -42,8 +42,15 @@
 
 (define-syntax (dssl:cond stx)
   (syntax-parse stx
-    [(_ [condition expr ...+] ...+)
-     (cond [condition (begin expr ...)] ...)]))
+    #:literals (else)
+    [(_ [test:expr expr:expr ...+] ...+)
+     #'(cond [test (begin expr ...)] ...)]
+    [(_ [test:expr expr:expr ...+]
+        ...
+        [else last:expr ...])
+     #'(cond [test (begin expr ...)]
+             ...
+             [else (begin last ...)])]))
 
 (define-syntax (dssl:define stx)
   (syntax-parse stx
@@ -85,11 +92,11 @@
 
 (define-syntax (dssl:unless stx)
   (syntax-parse stx
-    [(_ condition:expr expr:expr ...+)
-     #'(unless condition (begin expr ...))]))
+    [(_ test:expr expr:expr ...+)
+     #'(unless test (begin expr ...))]))
 
 (define-syntax (dssl:when stx)
   (syntax-parse stx
-    [(_ condition:expr expr:expr ...+)
-     #'(when condition (begin expr ...))]))
+    [(_ test:expr expr:expr ...+)
+     #'(when test (begin expr ...))]))
 

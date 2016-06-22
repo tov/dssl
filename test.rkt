@@ -10,10 +10,14 @@
         (n 8))
     (+ y (pair-y p))))
 
-(f 3)
-
 (check-expect (f 4) 9)
 
 (define g (λ (x) 'discard x))
 
 (check-expect (g 8) 8)
+
+(check-expect
+  (cond
+    [false 4]
+    [else 5])
+  5)
