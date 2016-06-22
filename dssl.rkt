@@ -7,6 +7,7 @@
                      let*
                      unless
                      when)
+         (all-from-out rackunit)
          (rename-out
           [dssl:define          define]
           [dssl:define-struct   define-struct]
@@ -18,8 +19,10 @@
 
 (require (for-syntax syntax/parse))
 (require (for-syntax "classes.rkt"))
+
 (require (except-in lang/htdp-advanced
                     define-struct))
+(require rackunit)
 
 (define-syntax (dssl:define stx)
   (syntax-parse stx
