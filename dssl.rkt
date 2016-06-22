@@ -8,5 +8,5 @@
          ;; Special forms
          lambda
          ;; Values
-         + - / %
+         + - /
          )
