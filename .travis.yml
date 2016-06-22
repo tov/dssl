@@ -19,5 +19,5 @@ before_install:
   - export PATH="${RACKET_DIR}/bin:${PATH}"
 
 script:
-  - /usr/racket/bin/raco make test.rkt
-  - /usr/racket/bin/raco test -x .
+  - raco make test.rkt
+  - raco test -x .
