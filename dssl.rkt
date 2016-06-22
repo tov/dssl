@@ -40,8 +40,8 @@
 (define-syntax-rule (dssl:module-begin expr ...)
   (#%module-begin expr ... (test)))
 
-(define-syntax (dssl:cond stx)
-  (syntax-parse stx
+(define-syntax dssl:cond
+  (syntax-parser
     #:literals (else)
     [(_ [test:expr expr:expr ...+] ...+)
      #'(cond [test (begin expr ...)] ...)]
@@ -52,51 +52,51 @@
              ...
              [else (begin last ...)])]))
 
-(define-syntax (dssl:define stx)
-  (syntax-parse stx
+(define-syntax dssl:define
+  (syntax-parser
     [(_ (name:id param:id ...) expr:expr ...+)
      #'(define (name param ...)
          (begin expr ...))]
     [(_ name:id rhs:expr)
      #'(define name rhs)]))
 
-(define-syntax (dssl:define-struct stx)
-  (syntax-parse stx
+(define-syntax dssl:define-struct
+  (syntax-parser
     [(_ name:id [field:id ...])
      #'(define-struct name [field ...])]))
 
-(define-syntax (dssl:lambda stx)
-  (syntax-parse stx
+(define-syntax dssl:lambda
+  (syntax-parser
     [(_ (param:id ...) expr:expr ...+)
      #'(lambda (param ...)
          (begin expr ...))]))
 
-(define-syntax (dssl:let stx)
-  (syntax-parse stx
+(define-syntax dssl:let
+  (syntax-parser
     [(_ bs:distinct-bindings expr:expr ...+)
      #'(let bs (begin expr ...))]
     [(_ name:id bs:distinct-bindings expr:expr ...+)
      #'(let name bs (begin expr ...))]))
 
-(define-syntax (dssl:let* stx)
-  (syntax-parse stx
+(define-syntax dssl:let*
+  (syntax-parser
     [(_ bs:distinct-bindings expr:expr ...+)
      #'(let* bs (begin expr ...))]
     [(_ name:id bs:distinct-bindings expr:expr ...+)
      #'(let* name bs (begin expr ...))]))
 
-(define-syntax (dssl:local stx)
-  (syntax-parse stx
+(define-syntax dssl:local
+  (syntax-parser
     [(_ (decl:expr ...) expr:expr ...+)
      #'(local (decl ...) (begin expr ...))]))
 
-(define-syntax (dssl:unless stx)
-  (syntax-parse stx
+(define-syntax dssl:unless
+  (syntax-parser
     [(_ test:expr expr:expr ...+)
      #'(unless test (begin expr ...))]))
 
-(define-syntax (dssl:when stx)
-  (syntax-parse stx
+(define-syntax dssl:when
+  (syntax-parser
     [(_ test:expr expr:expr ...+)
      #'(when test (begin expr ...))]))
 
