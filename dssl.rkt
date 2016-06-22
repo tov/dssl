@@ -5,6 +5,7 @@
            [test                run-all-tests])
          ;; from Advanced Student Language:
          (except-out (all-from-out lang/htdp-advanced)
+                     ;; Names we are redefining:
                      case
                      cond
                      lambda
@@ -19,11 +20,17 @@
                      time
                      unless
                      when
-                     ;; rename vectors as arrays:
-                     build-vector list->vector make-vector
-                     vector vector->list vector-length vector-ref
-                     vecror-set! vector?
-                     )
+                     ;; Not available:
+                     define-datatype
+                     set!
+                     ;; hash tables not available:
+                     hash-copy hash-count hash-eq? hash-equal?
+                     hash-eqv? hash-for-each hash-has-key?
+                     hash-map hash-ref hash-ref! hash-remove
+                     hash-remove! hash-set hash-set! hash-update
+                     hash-update! hash? make-hash make-hasheq
+                     make-hasheqv make-immutable-hash
+                     make-immutable-hasheq make-immutable-hasheqv)
          ;; Our own definitions:
          (rename-out
            ;; Based on the Racket version:
@@ -46,19 +53,10 @@
            [dssl-when           when]))
 
 (require (except-in lang/htdp-advanced
-                    define              ; uses racket version
-                    define-datatype     ; not available
-                    define-struct       ; uses racket version
-                    require             ; not available
-                    set!                ; not available
-                    ; hash tables not available:
-                    hash-copy hash-count hash-eq? hash-equal?
-                    hash-eqv? hash-for-each hash-has-key?
-                    hash-map hash-ref hash-ref! hash-remove
-                    hash-remove! hash-set hash-set! hash-update
-                    hash-update! hash? make-hash make-hasheq
-                    make-hasheqv make-immutable-hash
-                    make-immutable-hasheq make-immutable-hasheqv))
+                    ;; We want the Racket versions of these:
+                    define
+                    define-struct
+                    require))
 
 (require (for-syntax syntax/parse))
 (require syntax/parse/define)
