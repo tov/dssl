@@ -4,6 +4,12 @@ test:
 doc: dssl.scrbl
 	raco scribble --dest $@ $^
 
-reinstall:
+uninstall:
 	raco pkg remove dssl
+
+install:
 	raco pkg install
+
+reinstall:
+	$(MAKE) uninstall
+	$(MAKE) install
