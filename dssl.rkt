@@ -73,11 +73,8 @@
   [(_ name:id bs:distinct-bindings expr:expr ...+)
    #'(let name bs (begin expr ...))])
 
-(define-syntax-parser dssl-let*
-  [(_ bs:distinct-bindings expr:expr ...+)
-   #'(let* bs (begin expr ...))]
-  [(_ name:id bs:distinct-bindings expr:expr ...+)
-   #'(let* name bs (begin expr ...))])
+(define-simple-macro (dssl-let* bs:distinct-bindings expr:expr ...+)
+  (let* bs (begin expr ...)))
 
 (define-simple-macro (dssl-local (decl:expr ...) expr:expr ...+)
   #'(local (decl ...) (begin expr ...)))
