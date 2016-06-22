@@ -20,5 +20,5 @@ before_install:
   - export PATH="${RACKET_DIR}/bin:${PATH}"
 
 script:
-  - raco make test.rkt
-  - raco test -x .
+  - raco pkg install
+  - raco tests/test.rkt

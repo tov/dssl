@@ -1,4 +1,4 @@
-#lang reader "dssl.rkt"
+#lang dssl
 
 (define-struct pair [x y])
 
