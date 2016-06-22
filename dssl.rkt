@@ -1,28 +1,33 @@
 #lang racket
 
 (provide (except-out (all-from-out lang/htdp-advanced)
+                     #%module-begin
                      define
                      lambda
                      let
                      let*
                      unless
                      when)
-         (all-from-out rackunit)
          (rename-out
-          [dssl:define          define]
-          [dssl:define-struct   define-struct]
-          [dssl:lambda          lambda]
-          [dssl:let             let]
-          [dssl:let*            let*]
-          [dssl:unless          unless]
-          [dssl:when            when]))
+           [dssl:module-begin   #%module-begin]
+           [dssl:define         define]
+           [dssl:define-struct  define-struct]
+           [dssl:lambda         lambda]
+           [dssl:let            let]
+           [dssl:let*           let*]
+           [dssl:unless         unless]
+           [dssl:when           when]))
 
 (require (for-syntax syntax/parse))
 (require (for-syntax "classes.rkt"))
 
 (require (except-in lang/htdp-advanced
-                    define-struct))
-(require rackunit)
+                    define-struct
+                    require))
+(require test-engine/racket-tests)
+
+(define-syntax-rule (dssl:module-begin expr ...)
+  (#%module-begin expr ... (test)))
 
 (define-syntax (dssl:define stx)
   (syntax-parse stx

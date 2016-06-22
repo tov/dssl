@@ -11,4 +11,6 @@
 
 (f 3)
 
+; (check-equal? (f 4) 9)
+
 (check-expect (f 4) 9)
