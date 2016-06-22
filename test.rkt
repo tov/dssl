@@ -21,3 +21,5 @@
     [false 4]
     [else 5])
   5)
+
+(run-all-tests)
