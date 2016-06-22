@@ -65,34 +65,37 @@
 
 (require (for-syntax "classes.rkt"))
 
-(define-syntax-parser dssl-case
-  #:literals (else)
-  [(_ [(choice:expr ...) expr:expr ...+] ...+)
-   #'(case [(choice ...) (begin expr ...)] ...)]
-  [(_ [(choice:expr ...) expr:expr ...+]
-      ...
-      [else last:expr ...])
-   #'(cond [(choice ...) (begin expr ...)]
-           ...
-           [else (begin last ...)])])
+(define-syntax (dssl-case stx)
+  (syntax-parse stx
+    #:literals (else)
+    [(_ [(choice:expr ...) expr:expr ...+] ...+)
+     #'(case [(choice ...) (begin expr ...)] ...)]
+    [(_ [(choice:expr ...) expr:expr ...+]
+        ...
+        [else last:expr ...])
+     #'(cond [(choice ...) (begin expr ...)]
+             ...
+             [else (begin last ...)])]))
 
-(define-syntax-parser dssl-cond
-  #:literals (else)
-  [(_ [test:expr expr:expr ...+] ...+)
-   #'(cond [test (begin expr ...)] ...)]
-  [(_ [test:expr expr:expr ...+]
-      ...
-      [else last:expr ...])
-   #'(cond [test (begin expr ...)]
-           ...
-           [else (begin last ...)])])
+(define-syntax (dssl-cond stx)
+  (syntax-parse stx
+    #:literals (else)
+    [(_ [test:expr expr:expr ...+] ...+)
+     #'(cond [test (begin expr ...)] ...)]
+    [(_ [test:expr expr:expr ...+]
+        ...
+        [else last:expr ...])
+     #'(cond [test (begin expr ...)]
+             ...
+             [else (begin last ...)])]))
 
-(define-syntax-parser dssl-define
-  [(_ (name:id param:id ...) expr:expr ...+)
-   #'(define (name param ...)
-       (begin expr ...))]
-  [(_ name:id rhs:expr)
-   #'(define name rhs)])
+(define-syntax (dssl-define stx)
+  (syntax-parse stx
+    [(_ (name:id param:id ...) expr:expr ...+)
+     #'(define (name param ...)
+         (begin expr ...))]
+    [(_ name:id rhs:expr)
+     #'(define name rhs)]))
 
 (define-simple-macro (dssl-define-struct name:id [field:id ...])
   (define-struct name [field ...]))
@@ -100,11 +103,12 @@
 (define-simple-macro (dssl-lambda (param:id ...) expr:expr ...+)
   (lambda (param ...) (begin expr ...)))
 
-(define-syntax-parser dssl-let
-  [(_ bs:distinct-bindings expr:expr ...+)
-   #'(let bs (begin expr ...))]
-  [(_ name:id bs:distinct-bindings expr:expr ...+)
-   #'(let name bs (begin expr ...))])
+(define-syntax (dssl-let stx)
+  (syntax-parse stx
+    [(_ bs:distinct-bindings expr:expr ...+)
+     #'(let bs (begin expr ...))]
+    [(_ name:id bs:distinct-bindings expr:expr ...+)
+     #'(let name bs (begin expr ...))]))
 
 (define-simple-macro (dssl-let* bs:distinct-bindings expr:expr ...+)
   (let* bs (begin expr ...)))
@@ -115,16 +119,17 @@
 (define-simple-macro (dssl-local (decl:expr ...) expr:expr ...+)
   (local (decl ...) (begin expr ...)))
 
-(define-syntax-parser dssl-match
-  #:literals (else)
-  [(_ [pattern:expr expr:expr ...+] ...+)
-   #'(match [pattern (begin expr ...)] ...)]
-  [(_ [pattern:expr expr:expr ...+]
-      ...
-      [else last:expr ...])
-   #'(match [pattern (begin expr ...)]
-            ...
-            [else (begin last ...)])])
+(define-syntax (dssl-match stx)
+  (syntax-parse stx
+    #:literals (else)
+    [(_ [pattern:expr expr:expr ...+] ...+)
+     #'(match [pattern (begin expr ...)] ...)]
+    [(_ [pattern:expr expr:expr ...+]
+        ...
+        [else last:expr ...])
+     #'(match [pattern (begin expr ...)]
+              ...
+              [else (begin last ...)])]))
 
 (define-simple-macro (dssl-recur name:id bs:distinct-bindings expr:expr ...+)
   (recur name bs (begin expr ...)))
