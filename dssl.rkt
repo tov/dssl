@@ -18,7 +18,12 @@
                      shared
                      time
                      unless
-                     when)
+                     when
+                     ;; rename vectors as arrays:
+                     build-vector list->vector make-vector
+                     vector vector->list vector-length vector-ref
+                     vecror-set! vector?
+                     )
          ;; Our own definitions:
          (rename-out
            ;; Based on the Racket version:
@@ -46,7 +51,14 @@
                     define-struct       ; uses racket version
                     require             ; not available
                     set!                ; not available
-                    ))
+                    ; hash tables not available:
+                    hash-copy hash-count hash-eq? hash-equal?
+                    hash-eqv? hash-for-each hash-has-key?
+                    hash-map hash-ref hash-ref! hash-remove
+                    hash-remove! hash-set hash-set! hash-update
+                    hash-update! hash? make-hash make-hasheq
+                    make-hasheqv make-immutable-hash
+                    make-immutable-hasheq make-immutable-hasheqv))
 
 (require (for-syntax syntax/parse))
 (require syntax/parse/define)
