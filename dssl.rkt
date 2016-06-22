@@ -2,6 +2,7 @@
 
 (provide (except-out (all-from-out lang/htdp-advanced)
                      #%module-begin
+                     cond
                      lambda
                      λ
                      let
@@ -15,6 +16,7 @@
            [dssl:define-struct  define-struct]
            ; Based on ASL version:
            [dssl:module-begin   #%module-begin]
+           [dssl:cond           cond]
            [dssl:lambda         lambda]
            [dssl:lambda         λ]
            [dssl:let            let]
@@ -37,6 +39,11 @@
 
 (define-syntax-rule (dssl:module-begin expr ...)
   (#%module-begin expr ... (test)))
+
+(define-syntax (dssl:cond stx)
+  (syntax-parse stx
+    [(_ [condition expr ...+] ...+)
+     (cond [condition (begin expr ...)] ...)]))
 
 (define-syntax (dssl:define stx)
   (syntax-parse stx
