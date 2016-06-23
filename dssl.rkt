@@ -3,6 +3,8 @@
 (provide ;; from test-engine/racket-tests:
          (rename-out
            [test                run-all-tests])
+         ;; from racket/base:
+         set!
          ;; from Advanced Student Language:
          (except-out (all-from-out lang/htdp-advanced)
                      ;; Names we are redefining:
@@ -58,7 +60,8 @@
                     ;; We want the Racket versions of these:
                     define
                     define-struct
-                    require))
+                    require
+                    set!))
 
 (require (for-syntax syntax/parse))
 (require syntax/parse/define)
