@@ -3,8 +3,14 @@
 (provide ;; from test-engine/racket-tests:
          (rename-out
            [test                run-all-tests])
+
          ;; from racket/base:
          set!
+         for for/list for/vector for/and for/or for/sum
+         for/product for/lists for/first for/last for/fold
+         for* for*/list for*/vector for*/and for*/or for*/sum
+         for*/product for*/lists for*/first for*/last for*/fold
+
          ;; from Advanced Student Language:
          (except-out (all-from-out lang/htdp-advanced)
                      ;; Names we are redefining:
@@ -34,6 +40,7 @@
                      hash-update! hash? make-hash make-hasheq
                      make-hasheqv make-immutable-hash
                      make-immutable-hasheq make-immutable-hasheqv)
+
          ;; Our own definitions:
          (rename-out
            [dssl-until          until]
