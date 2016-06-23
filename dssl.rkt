@@ -98,7 +98,9 @@
      #'(define name rhs)]))
 
 (define-simple-macro (dssl-define-struct name:id [field:id ...])
-  (define-struct name [field ...]))
+  (define-struct name [field ...]
+                 #:mutable
+                 #:transparent))
 
 (define-simple-macro (dssl-lambda (param:id ...) expr:expr ...+)
   (lambda (param ...) (begin expr ...)))
