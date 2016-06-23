@@ -22,7 +22,8 @@
                      when
                      ;; Not available:
                      define-datatype
-                     set!
+                     recur
+                     shared
                      ;; hash tables not available:
                      hash-copy hash-count hash-eq? hash-equal?
                      hash-eqv? hash-for-each hash-has-key?
@@ -33,6 +34,9 @@
                      make-immutable-hasheq make-immutable-hasheqv)
          ;; Our own definitions:
          (rename-out
+           [dssl-until          until]
+           [dssl-while          while]
+           [dssl-do-times       do-times]
            ;; Based on the Racket version:
            [dssl-define         define]
            [dssl-define-struct  define-struct]
@@ -45,8 +49,6 @@
            [dssl-let*           let*]
            [dssl-letrec         letrec]
            [dssl-match          match]
-           [dssl-recur          recur]
-           [dssl-shared         shared]
            [dssl-local          local]
            [dssl-time           time]
            [dssl-unless         unless]
@@ -147,3 +149,36 @@
 
 (define-simple-macro (dssl-when test:expr expr:expr ...+)
   (when test (begin expr ...)))
+
+(define-syntax (dssl-while stx)
+  (define continue (datum->syntax stx 'continue))
+  (define break    (datum->syntax stx 'break))
+
+  (syntax-parse stx
+    [(_ test:expr expr:expr ...)
+     #`(let/ec #,break
+         (dssl-let loop ()
+           (define (#,continue) (loop) (#,break))
+           (dssl-when test
+             expr ...
+             (loop))))]))
+
+(define-simple-macro (dssl-until test:expr expr:expr ...)
+  (dssl-while (not test) expr ...))
+
+(define-syntax (dssl-do-times stx)
+  (syntax-parse stx
+    [(_ (var:id times:expr result:expr ...) body:expr ...)
+     (define continue (datum->syntax stx 'continue))
+     (define break    (datum->syntax stx 'break))
+     #`(let/ec #,break
+         (let ([limit times])
+           (dssl-let loop [(var 0)]
+             (define (#,continue) (#,break (loop (add1 var))))
+             (if (< var limit)
+               (begin
+                 body ...
+                 (loop (add1 var)))
+               (begin
+                 (void)
+                 result ...)))))]))
