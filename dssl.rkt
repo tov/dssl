@@ -22,7 +22,9 @@
                      let*
                      letrec
                      local
+                     make-posn
                      match
+                     posn
                      recur
                      shared
                      time
@@ -50,6 +52,7 @@
            [dssl-define         define]
            [dssl-define-struct  define-struct]
            ;; Based on the ASL version:
+           [make-posn           posn]
            [dssl-case           case]
            [dssl-cond           cond]
            [dssl-lambda         lambda]
