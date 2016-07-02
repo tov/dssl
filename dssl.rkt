@@ -5,6 +5,8 @@
            [test                run-all-tests])
 
          ;; from racket/base:
+         in-range in-naturals in-vector in-indexed
+         printf
          set!
          for for/list for/vector for/and for/or for/sum
          for/product for/lists for/first for/last for/fold
