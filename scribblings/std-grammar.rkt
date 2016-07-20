@@ -94,7 +94,7 @@ variety of functions.  For example, @racket["abcdef"],
 name of the character. For example, @racket[#\a], @racket[#\b],
 and @racket[#\space] are characters.}
 
-@t{In @seclink[(string-append section-prefix "-syntax")]{function calls}, the function appearing
+@t{In @seclink["expr-forms"]{function calls}, the function appearing
 immediately after the open parenthesis can be any functions defined
 with @racket[define] or @racket[define-struct], or any one of the
 @seclink[(string-append section-prefix "-pre-defined")]{pre-defined functions}.}

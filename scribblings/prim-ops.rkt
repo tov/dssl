@@ -17,7 +17,7 @@
          racket/list
          racket/pretty
          syntax/docprovide
-	 (for-label lang/htdp-intermediate)
+	 (for-label dssl)
          (for-syntax racket/base))
 
 (define (maybe-make-table l t)
@@ -91,7 +91,7 @@
     (typeset-type (cadr func)))))
 
 (define-syntax-rule
-  (prim-variables (section-prefix) empty true false ..2 ..3 ..4 ..5 ..6)
+  (prim-variables (section-prefix) empty true false)
   ;; ===> 
   (make-splice
    (list
@@ -106,13 +106,6 @@
    @defthing[false boolean?]{
       The @code{#false} value.}
 
-    @section[#:tag (string-append section-prefix " Template Variables")]{Template Variables}
-    @; MF: I tried abstracting but I failed
-    @defidform[..2]{A placeholder for indicating that a definition is a template.}
-    @defidform[..3]{A placeholder for indicating that a definition is a template.}
-    @defidform[..4]{A placeholder for indicating that a definition is a template.}
-    @defidform[..5]{A placeholder for indicating that a definition is a template.}
-    @defidform[..6]{A placeholder for indicating that a definition is a template.}
     )))
 
 ;; ----------------------------------------
@@ -280,10 +273,10 @@
 
   @defform*[#:id [cond cond-id]
             #:literals (else)
-            [(cond [question-expression answer-expression] ...)
-             (#,cond-elem [question-expression answer-expression]
+            [(cond [question-expression answer-expression ...] ...)
+             (#,cond-elem [question-expression answer-expression ...]
                           ... 
-                          [#,else-elem answer-expression])]]{
+                          [#,else-elem answer-expression ...])]]{
 
     Chooses a clause based on some condition. @racket[cond] finds the first
     @racket[question-expression] that evaluates to @true-elem, then
@@ -684,59 +677,6 @@ It is an error for @racket[expression], @racket[low-expression], or
 @racket[high-expression] to produce a function value or an inexact number;
 see note on @racket[check-expect] for details.  }
 
-  @; ----------------------------------------------------------------------
-
-  @defform*[#:id [require require-id]
-            [(require string)]]{
-
-   Makes the definitions of the module specified by @racket[string]
-   available in the current module (i.e., the current file), where
-   @racket[string] refers to a file relative to the current file.
-
-   The @racket[string] is constrained in several ways to avoid
-   problems with different path conventions on different platforms: a
-   @litchar{/} is a directory separator, @litchar{.} always means the
-   current directory, @litchar{..} always means the parent directory,
-   path elements can use only @litchar{a} through @litchar{z}
-   (uppercase or lowercase), @litchar{0} through @litchar{9},
-   @litchar{-}, @litchar{_}, and @litchar{.}, and the string cannot be
-   empty or contain a leading or trailing @litchar{/}.}
-
-
-  @defform/none[(#,require-elem module-name)]{
-
-   Accesses a file in an installed library. The library name is an
-   identifier with the same constraints as for a relative-path string
-   (though without the quotes), with the additional constraint that it
-   must not contain a @litchar{.}.}
-
-  @defform/none[(#,require-elem (lib string string ...))]{
-
-  Accesses a file in an installed library, making its definitions
-  available in the current module (i.e., the current file). The first
-  @racket[string] names the library file, and the remaining
-  @racket[string]s name the collection (and sub-collection, and so on)
-  where the file is installed. Each string is constrained in the same
-  way as for the @racket[(#,require-elem string)] form.}
-
-
-  @deftogether[(
-  @defform/none[#:literals (planet)
-                (#,require-elem (planet string (string string number number)))]{}
-  @defform/none[#:literals (planet) (#,require-elem (planet id))]{}
-  @defform/none[#:literals (planet) (#,require-elem (planet string))]{})]{
-
-  Accesses a library that is distributed on the internet via the
-  @|PLaneT| server, making it definitions available in the current module
-  (i.e., current file).
-
-  The full grammar for planet requires is given in 
-  @secref["require"
-          #:doc '(lib "scribblings/reference/reference.scrbl")], but
-  the best place to find examples of the syntax is on the
-  @link["http://planet.racket-lang.org"]{the @PLaneT server}, in the
-  description of a specific package.  
-}
 ))
 
 ;; ----------------------------------------

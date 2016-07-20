@@ -52,8 +52,6 @@ which differs from ASL’s, is described in this document.
       (or expr expr expr ...)
       (while expr expr ...)
       (until expr expr ...)
-      (do-times (var expr) expr ...)
-      (do-times (var expr expr) expr ...)
       for-loop
       (time expr ...)
       (delay expr)
@@ -100,11 +98,13 @@ which differs from ASL’s, is described in this document.
            (check-range expr expr expr)]
 ]
 
-@prim-nonterms[("advanced") define define-struct]
+@prim-nonterms[("dssl") define define-struct]
 
-@prim-variables[("advanced") empty true false .. ... .... ..... ......]
+@prim-variables[("dssl") empty true false]
 
 @section[#:tag "dssl-syntax"]{Syntax for DSSL}
+
+@subsection[#:tag "def-forms"]{Definition Forms}
 
 @defform[(define (name variable ...) expression ...)]{
 
@@ -123,14 +123,7 @@ Defines a variable called @racket[name] with the the value of
 another function or variable, and @racket[name] itself must not appear in
 @racket[expression].}
 
-@defform[(lambda (variable ...) expression ...)]{
-
-Creates a function that takes as many arguments as given @racket[variable]s,
-and whose body is a sequence of @racket[expression]s. The result of the function is the result of the last @racket[expression].}
-
-@defform[(λ (variable ...) expression)]{
-
-The Greek letter @racket[λ] is a synonym for @racket[lambda].}
+@subsection[#:tag "expr-forms"]{Expression Forms}
 
 @defform/none[(expression expression ...)]{
 
@@ -144,6 +137,88 @@ before th○e function call, or from a @racket[lambda] expression. The
 number of argument @racket[expression]s must be the same as the number
 of arguments expected by the function.}
 
+@defform[(begin expression expression ...)]{
+
+Evaluates the @racket[expression]s in order from left to right. The value of
+the @racket[begin] expression is the value of the last @racket[expression].}
+
+
+@defform[(begin0 expression expression ...)]{
+
+Evaluates the @racket[expression]s in order from left to right. The value of
+the @racket[begin] expression is the value of the first @racket[expression].}
+
+
+@defform[(set! variable expression)]{
+
+Evaluates @racket[expression], and then mutates the @racket[variable]
+to have @racket[expression]'s value. The @racket[variable] must be defined 
+by @racket[define], @racket[letrec], @racket[let*], or @racket[let].}
+
+
+@defform[(lambda (variable ...) expression ...)]{
+
+Creates a function that takes as many arguments as given @racket[variable]s,
+and whose body is a sequence of @racket[expression]s. The result of the function is the result of the last @racket[expression].}
+
+@defform[(λ (variable ...) expression ...)]{
+
+The Greek letter @racket[λ] is a synonym for @racket[lambda].}
+
+@defform[(case expression [(choice ...) expression ...]
+                          ...
+                          [(choice ...) expression ...])]{
+
+A @racket[case] form contains one or more clauses. Each clause contains a
+choices (in parentheses)---either numbers or names---and an answer
+@racket[expression]. The initial @racket[expression] is evaluated, and its
+value is compared to the choices in each clause, where the lines are considered
+in order. The first line that contains a matching choice provides an answer
+@racket[expression] whose value is the result of the whole @racket[case]
+expression. Numbers match with the numbers in the choices, and symbols match
+with the names. If none of the lines contains a matching choice, it is an
+error.}
+
+@defform/none[#:literals (case else)
+              (case expression [(choice ...) expression ...]
+                               ...
+                               [else expression ...])]{
+
+This form of @racket[case] is similar to the prior one, except that the final
+@racket[else] clause is taken if no clause contains a choice matching the value
+of the initial @racket[expression].}
+
+@; ----------------------------------------------------------------------
+
+
+@defform[(match expression [pattern expression ...] ...)]{
+
+A @racket[match] form contains one or more clauses that are surrounded by
+square brackets. Each clause contains a pattern---a description of a value---and
+an answer @racket[expression].  The initial @racket[expression] is evaluated,
+and its value is matched against the pattern in each clause, where the clauses are
+considered in order. The first clause that contains a matching pattern provides
+an answer @racket[expression] whose value is the result of the whole
+@racket[match] expression. This @racket[expression] may reference identifiers
+defined in the matching pattern. If none of the clauses contains a matching
+pattern, it is an error.}
+
+@; ----------------------------------------------------------------------
+
+@defform[(when test-expression body-expression ...)]{
+
+If @racket[test-expression] evaluates to @racket[true], the
+@racket[body-expression]s are evaluated in order, an the result is the result
+of the last @racket[body-expression]. Otherwise the result is @racket[(void)]
+and the @racket[body-expression] is not evaluated. If the result of evaluating
+the @racket[test-expression] is neither @racket[true] nor @racket[false], it is
+an error.}
+
+@defform[(unless test-expression body-expression ...)]{
+
+Like @racket[when], but the @racket[body-expression]s are evaluated when the
+@racket[test-expression] produces @racket[false] instead of @racket[true].}
+
 @defform[(delay expression)]{
 
 Produces a “promise” to evaluate @racket[expression]. The
@@ -151,4 +226,61 @@ Produces a “promise” to evaluate @racket[expression]. The
 @racket[force]; when the promise is forced, the result is recorded, so
 that any further @racket[force] of the promise immediately produces the
 remembered value.}
+
+@(intermediate-forms lambda
+                     local
+                     letrec
+                     let*
+                     let
+                     time
+                     define
+                     define-struct)
+
+@defform[(while test-expression body-expression ...)]{
+
+If @racket[test-expression] evaluates to @racket[true], the
+@racket[body-expression]s are evaluated in order, and then the loop starts over
+by testing @racket[test-expression] again. When @racket[test-expression] is
+false, the loop terminates and returns @racket[(void)]. If the result of
+evaluating the @racket[test-expression] is neither @racket[true] nor
+@racket[false], it is an error.}
+
+@defform[(until test-expression body-expression ...)]{
+
+Like @racket[while], except the loop continutes so long as
+@racket[test-expression] evalutes to false.}
+
+@(prim-forms ("dssl")
+             define
+             lambda
+             define-struct
+             @{In DSSL, @racket[define-struct] introduces one additional function:
+              @itemize[
+               @item{@racketidfont{set-}@racket[_structure-name]@racketidfont{-}@racket[_field-name]@racketidfont{!}
+                : takes an instance of the structure and a value, and
+                mutates the instance's field to the given value.}]}
+             define-wish
+             cond
+             else
+             if
+             and 
+             or
+             check-expect
+             check-random
+	     check-satisfied
+             check-within
+             check-error
+             check-member-of
+             check-range
+             require
+             true false
+             #:with-beginner-function-call #f)
+
+@section[#:tag "dssl-pre-defined"]{Pre-Defined Functions}
+
+The remaining subsections list those functions that are built into the
+programming language. All other functions must be defined in the program.
+
+@(require (submod lang/htdp-advanced procedures))
+@(render-sections (docs) #'here "htdp-advanced")
 
