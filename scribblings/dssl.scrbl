@@ -1,14 +1,22 @@
 #lang scribble/manual
-@require[@for-label[dssl]]
+@require["common.rkt" "std-grammar.rkt" "prim-ops.rkt"
+         @for-label[dssl]]
 
 @title{DSSL: Data Structures Student Language}
 @author{Jesse A. Tov <jesse@"@"eecs.northwestern.edu>}
 
 @defmodulelang[dssl]
 
+The DSSL language is substantially similar to
+@hyperlink["https://docs.racket-lang.org/htdp-langs/advanced.html"]{Advanced
+Student Language}. In particular, it provides the same functions and
+values (except for hash tables). The syntax of DSSL’s special forms,
+which differs from ASL’s, is described in this document.
+
 @racketgrammar*[
-#:literals (define define-struct define-datatype lambda λ cond else if and or require lib planet
-            local let let* letrec time begin begin0 set! delay shared recur when case match unless
+#:literals (define define-struct define-datatype lambda λ cond else if and or
+            local let let* letrec time begin begin0 set! delay shared when case match unless
+            while until do-times
              ; match
              _ cons list list* struct vector box
             check-expect check-random check-satisfied check-within check-member-of check-range check-error)
@@ -19,7 +27,8 @@
 [definition (define (name variable ...) expr)
             (define name expr)
             (define-struct name (name ...))]
-[expr (begin expr expr ...)
+[expr (code:line (expr expr ...))
+      (begin expr expr ...)
       (begin0 expr expr ...)
       (lambda (variable ...) expr ...)
       (λ (variable ...) expr ...)
@@ -29,7 +38,6 @@
       (let name ([name expr] ...) expr ...)
       (let* ([name expr] ...) expr ...)
       (set! name expr)
-      (code:line (expr expr ...))
       (cond [expr expr ...] ... [expr expr ...])
       (cond [expr expr ...] ... [else expr ...])
       (case expr [(choice choice ...) expr ...] ...
@@ -46,6 +54,7 @@
       (until expr expr ...)
       (do-times (var expr) expr ...)
       (do-times (var expr expr) expr ...)
+      for-loop
       (time expr ...)
       (delay expr)
       (code:line name)
@@ -82,13 +91,20 @@
                      @#,elem{@racketvalfont{`}@racket[_quasiquoted-pattern]}
                      @#,elem{@racketfont[","]@racket[_pattern]}
                      @#,elem{@racketfont[",@"]@racket[_pattern]}]
+[test-case (check-expect expr expr)
+           (check-error expr expr ...)
+           (check-within expr expr expr)
+           (check-random expr expr)
+           (check-satisfied expr expr)
+           (check-member-of expr expr ...)
+           (check-range expr expr expr)]
 ]
 
-@section[#:tag "dssl-syntax"]{Syntax for DSSL}
+@prim-nonterms[("advanced") define define-struct]
 
-In DSSL, @racket[define-struct]'s structures are mutable,
-@racket[define] and @racket[lambda] can define functions of zero
-arguments, and function calls can invoke functions of zero arguments.
+@prim-variables[("advanced") empty true false .. ... .... ..... ......]
+
+@section[#:tag "dssl-syntax"]{Syntax for DSSL}
 
 @defform[(define (name variable ...) expression ...)]{
 

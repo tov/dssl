@@ -27,8 +27,6 @@
                      make-posn
                      match
                      posn
-                     recur
-                     shared
                      time
                      unless
                      when
@@ -149,12 +147,6 @@
      #'(match [pattern (begin expr ...)]
               ...
               [else (begin last ...)])]))
-
-(define-simple-macro (dssl-recur name:id bs:distinct-bindings expr:expr ...+)
-  (recur name bs (begin expr ...)))
-
-(define-simple-macro (dssl-shared bs:distinct-bindings expr:expr ...+)
-  (shared bs (begin expr ...)))
 
 (define-simple-macro (dssl-time expr:expr ...+)
   (time (begin expr ...)))

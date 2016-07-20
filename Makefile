@@ -1,7 +1,9 @@
+default: doc
+
 test:
 	racket tests/test.rkt
 
-doc: dssl.scrbl
+doc: scribblings/dssl.scrbl
 	raco scribble --dest $@ $^
 	echo "<meta http-equiv='refresh' content='0;url=dssl.html'>" > doc/index.html
 
