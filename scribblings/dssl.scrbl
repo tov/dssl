@@ -10,16 +10,18 @@
 The DSSL language is substantially similar to
 @hyperlink["https://docs.racket-lang.org/htdp-langs/advanced.html"]{Advanced
 Student Language}. In particular, it provides the same functions and
-values (except for hash tables). The syntax of DSSL’s special forms,
-which differs from ASL’s, is described in this document.
+values (except for hash tables).
+
+In addition to the special forms documented below, DSSL includes @racket[for]
+(and friends).
 
 @racketgrammar*[
 #:literals (define define-struct define-datatype lambda λ cond else if and or
-            local let let* letrec time begin begin0 set! delay shared when case match unless
-            while until do-times
-             ; match
-             _ cons list list* struct vector box
-            check-expect check-random check-satisfied check-within check-member-of check-range check-error)
+            local let let* recur shared letrec time begin begin0 set!
+            delay when case match unless while until do-times
+            _ cons list list* struct vector box
+            check-expect check-random check-satisfied check-within
+            check-member-of check-range check-error)
 [program (code:line def-or-expr ...)]
 [def-or-expr definition
              expr
@@ -33,10 +35,11 @@ which differs from ASL’s, is described in this document.
       (lambda (variable ...) expr ...)
       (λ (variable ...) expr ...)
       (local [definition ...] expr ...)
-      (letrec ([name expr] ...) expr ...)
       (let ([name expr] ...) expr ...)
-      (let name ([name expr] ...) expr ...)
       (let* ([name expr] ...) expr ...)
+      (recur name ([name expr] ...) expr ...)
+      (letrec ([name expr] ...) expr ...)
+      (shared ([name expr] ...) expr ...)
       (set! name expr)
       (cond [expr expr ...] ... [expr expr ...])
       (cond [expr expr ...] ... [else expr ...])
@@ -235,6 +238,37 @@ remembered value.}
                      time
                      define
                      define-struct)
+
+@defform[(shared ([name expr-for-shared] ...) expression)]{
+
+Like @racket[letrec], but when an @racket[expression] next to an @racket[id]
+is a @racket[cons], @racket[list], @racket[vector], quasiquoted
+expression, or @racketidfont{make-}@racket[_struct-name] from a
+@racket[define-struct], the @racket[expression] can refer directly to any
+@racket[name], not just @racket[name]s defined earlier. Thus,
+@racket[shared] can be used to create cyclic data structures.}
+
+@defform[(recur loop-name ([name expr-for-recur] ...) expression)]{
+
+A short-hand syntax for recursive loops. The first @racket[name] corresponds to
+the name of the recursive function. The @racket[name]s in the parenthesis are
+the function's arguments, and each corresponding @racket[expression] is a
+value supplied for that argument in an initial starting call of the
+function. The last @racket[expression] is the body of the function.
+
+More precisely, the following @racket[recur]:·
+
+@racketblock[
+(recur func-name ([arg-name arg-expression] (unsyntax @racketidfont{...}))
+  body-expression)
+]
+
+is equivalent to:
+
+@racketblock[
+(local [(define (func-name arg-name (unsyntax @racketidfont{...})) body-expressi○on)]
+  (func-name arg-expression (unsyntax @racketidfont{...})))
+]}
 
 @defform[(while test-expression body-expression ...)]{
 
