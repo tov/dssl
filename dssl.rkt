@@ -62,6 +62,8 @@
            [dssl-letrec         letrec]
            [dssl-match          match]
            [dssl-local          local]
+           [dssl-recur          recur]
+           [dssl-shared         shared]
            [dssl-time           time]
            [dssl-unless         unless]
            [dssl-when           when]))
@@ -126,6 +128,12 @@
      #'(let bs (begin expr ...))]
     [(_ name:id bs:distinct-bindings expr:expr ...+)
      #'(let name bs (begin expr ...))]))
+
+(define-simple-macro (dssl-recur name:id bs:distinct-bindings expr:expr ...+)
+  (recur name bs (begin expr ...)))
+
+(define-simple-macro (dssl-shared name:id expr:expr ...+)
+  (shared bs (begin expr ...)))
 
 (define-simple-macro (dssl-let* bs:distinct-bindings expr:expr ...+)
   (let* bs (begin expr ...)))
