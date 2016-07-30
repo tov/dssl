@@ -132,7 +132,7 @@
 (define-simple-macro (dssl-recur name:id bs:distinct-bindings expr:expr ...+)
   (recur name bs (begin expr ...)))
 
-(define-simple-macro (dssl-shared name:id expr:expr ...+)
+(define-simple-macro (dssl-shared bs:distinct-bindings expr:expr ...+)
   (shared bs (begin expr ...)))
 
 (define-simple-macro (dssl-let* bs:distinct-bindings expr:expr ...+)
