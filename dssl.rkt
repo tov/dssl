@@ -27,13 +27,13 @@
                      make-posn
                      match
                      posn
+                     recur
+                     shared
                      time
                      unless
                      when
                      ;; Not available:
                      define-datatype
-                     recur
-                     shared
                      ;; hash tables not available:
                      hash-copy hash-count hash-eq? hash-equal?
                      hash-eqv? hash-for-each hash-has-key?
