@@ -85,14 +85,16 @@
 (define-syntax (dssl-case stx)
   (syntax-parse stx
     #:literals (else)
-    [(_ [(choice:expr ...) expr:expr ...+] ...+)
-     #'(case [(choice ...) (begin expr ...)] ...)]
-    [(_ [(choice:expr ...) expr:expr ...+]
+    [(_ scrutinee:expr [(choice:expr ...) expr:expr ...+] ...+)
+     #'(case scrutinee [(choice ...) (begin expr ...)] ...)]
+    [(_ scrutinee:expr
+        [(choice:expr ...) expr:expr ...+]
         ...
         [else last:expr ...])
-     #'(cond [(choice ...) (begin expr ...)]
-             ...
-             [else (begin last ...)])]))
+     #'(case scrutinee
+         [(choice ...) (begin expr ...)]
+         ...
+         [else (begin last ...)])]))
 
 (define-syntax (dssl-cond stx)
   (syntax-parse stx
@@ -147,12 +149,14 @@
 (define-syntax (dssl-match stx)
   (syntax-parse stx
     #:literals (else)
-    [(_ [pattern:expr expr:expr ...+] ...+)
-     #'(match [pattern (begin expr ...)] ...)]
-    [(_ [pattern:expr expr:expr ...+]
+    [(_ scrutinee:expr [pattern:expr expr:expr ...+] ...+)
+     #'(match scrutinee [pattern (begin expr ...)] ...)]
+    [(_ scrutinee:expr
+        [pattern:expr expr:expr ...+]
         ...
         [else last:expr ...])
-     #'(match [pattern (begin expr ...)]
+     #'(match scrutinee
+              [pattern (begin expr ...)]
               ...
               [else (begin last ...)])]))
 
