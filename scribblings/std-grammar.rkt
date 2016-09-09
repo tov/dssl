@@ -1,5 +1,4 @@
-#reader scribble/reader
-#lang racket/base
+#lang at-exp racket/base
 (require "common.rkt"
          scribble/decode)
 

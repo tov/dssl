@@ -119,7 +119,7 @@ function returns the value of the last expression in the sequence.
 The function name’s cannot be the same as that of another function or
 variable.}
 
-@defform[(define name expression)]{
+@defform[#:link-target? #f (define name expression)]{
 
 Defines a variable called @racket[name] with the the value of
 @racket[expression]. The variable’s name cannot be the same as that of
