@@ -30,3 +30,10 @@
     (break))
   (display i)
   (newline))
+
+(define (g x)
+  (return x)
+  5)
+
+(display (g 10))
+(newline)

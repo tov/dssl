@@ -45,6 +45,7 @@
 
          ;; Our own definitions:
          (rename-out
+           [dssl-return         return]
            [dssl-break          break]
            [dssl-continue       continue]
            [dssl-until          until]
@@ -113,8 +114,8 @@
 (define-syntax (dssl-define stx)
   (syntax-parse stx
     [(_ (name:id param:id ...) expr:expr ...+)
-     #'(define (name param ...)
-         (begin expr ...))]
+     #'(define name
+         (dssl-lambda (param ...) expr ...))]
     [(_ name:id rhs:expr)
      #'(define name rhs)]))
 
@@ -123,8 +124,16 @@
                  #:mutable
                  #:transparent))
 
+(define-syntax-parameter dssl-return
+  (lambda (stx)
+    (raise-syntax-error #f "use of return keyword not in a function" stx)))
+
 (define-simple-macro (dssl-lambda (param:id ...) expr:expr ...+)
-  (lambda (param ...) (begin expr ...)))
+  (lambda (param ...)
+    (let/ec return-f
+      (syntax-parameterize
+        ([dssl-return (syntax-rules () [(_ ?result) (return-f ?result)])])
+        (begin expr ...)))))
 
 (define-syntax (dssl-let stx)
   (syntax-parse stx
