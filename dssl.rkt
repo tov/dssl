@@ -45,6 +45,8 @@
 
          ;; Our own definitions:
          (rename-out
+           [dssl-break          break]
+           [dssl-continue       continue]
            [dssl-until          until]
            [dssl-while          while]
            [dssl-do-times       do-times]
@@ -75,6 +77,7 @@
                     require
                     set!))
 
+(require racket/stxparam)
 (require (for-syntax syntax/parse))
 (require syntax/parse/define)
 
@@ -169,18 +172,26 @@
 (define-simple-macro (dssl-when test:expr expr:expr ...+)
   (when test (begin expr ...)))
 
-(define-syntax (dssl-while stx)
-  (define continue (datum->syntax stx 'continue))
-  (define break    (datum->syntax stx 'break))
+(define-syntax-parameter dssl-break
+  (lambda (stx)
+    (raise-syntax-error #f "use of break keyword not in a loop" stx)))
 
+(define-syntax-parameter dssl-continue
+  (lambda (stx)
+    (raise-syntax-error #f "use of continue keyword not in a loop" stx)))
+
+(define-syntax (dssl-while stx)
   (syntax-parse stx
     [(_ test:expr expr:expr ...)
-     #`(let/ec #,break
+     #`(let/ec break-f
          (dssl-let loop ()
-           (define (#,continue) (loop) (#,break))
-           (dssl-when test
-             expr ...
-             (loop))))]))
+           (define (continue-f) (loop) (break-f))
+           (syntax-parameterize
+             ([dssl-break (syntax-rules () [(_) (break-f)])]
+              [dssl-continue (syntax-rules () [(_) (continue-f)])])
+             (dssl-when test
+               expr ...
+               (loop)))))]))
 
 (define-simple-macro (dssl-until test:expr expr:expr ...)
   (dssl-while (not test) expr ...))
