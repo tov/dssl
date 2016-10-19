@@ -18,7 +18,7 @@ In addition to the special forms documented below, DSSL includes @racket[for]
 @racketgrammar*[
 #:literals (define define-struct define-datatype lambda λ cond else if and or
             local let let* recur shared letrec time begin begin0 set!
-            delay when case match unless while until do-times
+            delay when case match unless while until
             _ cons list list* struct vector box
             check-expect check-random check-satisfied check-within
             check-member-of check-range check-error)

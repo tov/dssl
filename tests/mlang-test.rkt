@@ -30,9 +30,3 @@
     (break))
   (display i)
   (newline))
-
-(do-times (i 10)
-  (when (= i 5)
-    (continue))
-  (display i)
-  (newline))

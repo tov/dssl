@@ -49,7 +49,6 @@
            [dssl-continue       continue]
            [dssl-until          until]
            [dssl-while          while]
-           [dssl-do-times       do-times]
            ;; Based on the Racket version:
            [dssl-define         define]
            [dssl-define-struct  define-struct]
@@ -195,20 +194,3 @@
 
 (define-simple-macro (dssl-until test:expr expr:expr ...)
   (dssl-while (not test) expr ...))
-
-(define-syntax (dssl-do-times stx)
-  (syntax-parse stx
-    [(_ (var:id times:expr result:expr ...) body:expr ...)
-     (define continue (datum->syntax stx 'continue))
-     (define break    (datum->syntax stx 'break))
-     #`(let/ec #,break
-         (let ([limit times])
-           (dssl-let loop [(var 0)]
-             (define (#,continue) (#,break (loop (add1 var))))
-             (if (< var limit)
-               (begin
-                 body ...
-                 (loop (add1 var)))
-               (begin
-                 (void)
-                 result ...)))))]))
