@@ -5,13 +5,14 @@
            [test                run-all-tests])
 
          ;; from racket/base:
-         in-range in-naturals in-vector in-indexed
+         in-range in-naturals in-vector in-indexed in-list
          printf
          set!
          for for/list for/vector for/and for/or for/sum
          for/product for/lists for/first for/last for/fold
          for* for*/list for*/vector for*/and for*/or for*/sum
          for*/product for*/lists for*/first for*/last for*/fold
+         bitwise-ior bitwise-and bitwise-xor bitwise-not
 
          ;; from Advanced Student Language:
          (except-out (all-from-out lang/htdp-advanced)
