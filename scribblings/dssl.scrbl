@@ -12,7 +12,8 @@ The DSSL language is substantially similar to
 Student Language}. In particular, it provides the same functions and
 values (except for hash tables).
 
-In addition to the special forms documented below, DSSL includes @racket[for]
+In addition to the special forms documented below, DSSL includes
+@hyperlink["https://docs.racket-lang.org/reference/for.html"]{@racket[for]}
 (and friends).
 
 @racketgrammar*[
