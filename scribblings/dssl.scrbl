@@ -137,7 +137,7 @@ every instance of @racket[name]'s variables are replaced by the values of the
 corresponding @racket[expression]s.
 
 The function being called must come from either a definition appearing
-before th○e function call, or from a @racket[lambda] expression. The
+before the function call, or from a @racket[lambda] expression. The
 number of argument @racket[expression]s must be the same as the number
 of arguments expected by the function.}
 
@@ -267,7 +267,7 @@ More precisely, the following @racket[recur]:·
 is equivalent to:
 
 @racketblock[
-(local [(define (func-name arg-name (unsyntax @racketidfont{...})) body-expressi○on)]
+(local [(define (func-name arg-name (unsyntax @racketidfont{...})) body-expression)]
   (func-name arg-expression (unsyntax @racketidfont{...})))
 ]}
 
